@@ -6,6 +6,10 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
+# variables
+font = cv2.FONT_HERSHEY_SIMPLEX
+count = 0
+
 # functions
 def scan_detection(image):
     global document_contour
@@ -29,10 +33,19 @@ def scan_detection(image):
                 document_contour = approx
                 max_area = area
 
+
 def image_processing (image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, threshold = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY)
     return threshold
+
+
+def center_text(image, text):
+    text_size = cv2.getTextSize(text, font, 2, 5)[0]
+    first_text = (image.shape[1] - text_size[0]) // 2
+    second_text = (image.shape[0] - text_size[1]) // 2
+    cv2.putText(image, text, (first_text, second_text), font, 2, (255,0), 5, cv2.LINE_AA)
+
 
 
 # video set up
@@ -61,7 +74,30 @@ while True:
 # create an optical characted recognition
     ocr_text = pytesseract.image_to_string(warped)
     #print (ocr_text)
-    
+
 # save the image and text to be printed
+    pressed_keys = cv2.waitKey(1) & 0xFF
+    if pressed_keys == 27:
+        break
+
+    elif pressed_keys == ord('s'):
+        cv2.imwrite('outpute/scanned_' + str(count) + ".jpg", processed)
+        count += 1
+
+        center_text (frame, "scan saved")
+        cv2.imshow("input", frame)
+        cv2.waitKey(500)
+
+    elif pressed_keys == ord('o'):
+        file = open("output/recognized_" + str(count - 1) + ".txt", "w")
+        ocr_text = pytesseract.image_to_string(warped)
+        file.write(ocr_text)
+        file.close()
+
+        center_text (frame, "scan saved")
+        cv2.imshow("input", frame)
+        cv2.waitKey(500)
+
+cv2.destroyAllWindows()
 
 #https://www.youtube.com/watch?v=W3DzSm8WI1g - yt link of the code 
