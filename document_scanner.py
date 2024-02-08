@@ -4,11 +4,14 @@ import numpy as np
 from imutils.perspective import four_point_transform
 import pytesseract
 
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
 # functions
 def scan_detection(image):
     global document_contour
 
     document_contour = np.array([[0,0], [width, 0], [width, height], [0, height]])
+    
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5,5), 0)
     _, threshold = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -48,7 +51,8 @@ while True:
 # convert image to black and white
 
 # create an optical characted recognition
-
+    ocr_text = pytesseract.image_to_string(warped)
+    print (ocr_text)
 # save the image and text to be printed
 
 #https://www.youtube.com/watch?v=W3DzSm8WI1g - yt link of the code 
