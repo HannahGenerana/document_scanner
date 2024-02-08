@@ -29,6 +29,11 @@ def scan_detection(image):
                 document_contour = approx
                 max_area = area
 
+def image_processing (image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    _, threshold = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY)
+    return threshold
+
 
 # video set up
 cap = cv2.VideoCapture (0 + cv2.CAP_DSHOW)
@@ -49,10 +54,14 @@ while True:
     cv2.imshow ("warped", warped)
 
 # convert image to black and white
+    processed = image_processing(warped)
+    #processed = processed[10:processed.shape[0]-10, 10:processed.shape[1]-10]
+    cv2.imshow("processed", processed)
 
 # create an optical characted recognition
     ocr_text = pytesseract.image_to_string(warped)
-    print (ocr_text)
+    #print (ocr_text)
+    
 # save the image and text to be printed
 
 #https://www.youtube.com/watch?v=W3DzSm8WI1g - yt link of the code 
