@@ -1,14 +1,16 @@
-# pseudocode
 import cv2
 import numpy as np 
 from imutils.perspective import four_point_transform
 import pytesseract
+
+# pseudocode
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 # variables
 font = cv2.FONT_HERSHEY_SIMPLEX
 count = 0
+scale = 0.5
 
 # functions
 def scan_detection(image):
@@ -50,7 +52,7 @@ def center_text(image, text):
 
 # video set up
 cap = cv2.VideoCapture (0 + cv2.CAP_DSHOW)
-width, height = 500, 450
+width, height = 1980, 1080
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
@@ -58,22 +60,22 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 while True:
     _, frame = cap.read()
     frame_copy = frame.copy()
+
 # detect the paper to scan
     scan_detection (frame_copy)
-    cv2.imshow("input", frame)
+    cv2.imshow("Input", cv2.resize(frame, (int(scale * width), int(scale * height))))
 
 # scan wrapping
     warped = four_point_transform(frame_copy, document_contour.reshape(4,2))
-    cv2.imshow ("warped", warped)
+    cv2.imshow ("Warped", cv2.resize(warped, (int(scale * warped.shape[1]), int(scale * warped.shape[0]))))
 
 # convert image to black and white
     processed = image_processing(warped)
-    #processed = processed[10:processed.shape[0]-10, 10:processed.shape[1]-10]
-    cv2.imshow("processed", processed)
+    processed = processed[10:processed.shape[0]-10, 10:processed.shape[1]-10]
+    cv2.imshow("Processed", processed)
 
 # create an optical characted recognition
     ocr_text = pytesseract.image_to_string(warped)
-    #print (ocr_text)
 
 # save the image and text to be printed
     pressed_keys = cv2.waitKey(1) & 0xFF
@@ -81,11 +83,11 @@ while True:
         break
 
     elif pressed_keys == ord('s'):
-        cv2.imwrite('outpute/scanned_' + str(count) + ".jpg", processed)
+        cv2.imwrite('Outpute/scanned_' + str(count) + ".jpg", processed)
         count += 1
 
-        center_text (frame, "scan saved")
-        cv2.imshow("input", frame)
+        center_text (frame, "Scan saved")
+        cv2.imshow("Input", cv2.resize(frame, (int(scale * width), int(scale * height))))
         cv2.waitKey(500)
 
     elif pressed_keys == ord('o'):
@@ -95,7 +97,7 @@ while True:
         file.close()
 
         center_text (frame, "scan saved")
-        cv2.imshow("input", frame)
+        cv2.imshow("Input", cv2.resize(frame, (int(scale * width), int(scale * height))))
         cv2.waitKey(500)
 
 cv2.destroyAllWindows()
