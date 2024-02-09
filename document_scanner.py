@@ -83,7 +83,7 @@ while True:
         break
 
     elif pressed_keys == ord('s'):
-        cv2.imwrite('Outpute/scanned_' + str(count) + ".jpg", processed)
+        cv2.imwrite('output/scanned_' + str(count) + ".jpg", processed)
         count += 1
 
         center_text (frame, "Scan saved")
@@ -96,7 +96,7 @@ while True:
         file.write(ocr_text)
         file.close()
 
-        center_text (frame, "scan saved")
+        center_text (frame, "Text saved")
         cv2.imshow("Input", cv2.resize(frame, (int(scale * width), int(scale * height))))
         cv2.waitKey(500)
 
