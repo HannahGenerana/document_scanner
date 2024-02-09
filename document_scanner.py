@@ -10,7 +10,7 @@ pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesse
 # variables
 font = cv2.FONT_HERSHEY_SIMPLEX
 count = 0
-scale = 0.5
+scale = 1
 
 # functions
 def scan_detection(image):
@@ -52,7 +52,7 @@ def center_text(image, text):
 
 # video set up
 cap = cv2.VideoCapture (0 + cv2.CAP_DSHOW)
-width, height = 1980, 1080
+width, height = 500, 450
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
